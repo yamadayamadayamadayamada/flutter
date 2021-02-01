@@ -1,91 +1,116 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
+
+import 'package:flutter/material.dart'; /* マテリアルデザインのインポート */
 
 void main() {
+  /* メイン関数 */
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  /* FlutterのクラスはすべてWidgetを継承している */
+  /* StatelessWidgetは静的な関数 */
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
+        /* デフォルトデザイン */
+        primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page'), /* 表示対象 */
     );
   }
 }
 
+/* 自分のアプリのHome */
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
+  MyHomePage({Key key, this.title}) : super(key: key); /* コンストラクタ */
   final String title;
-
   @override
+  /* とりあえず状態を、状態_MyHomePagteStateにする */
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int answerNumber = 0;
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: SafeArea(
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[Image.asset("images/gu.png")],
+          children: <Widget>[
+            Expanded(
+              /* これを挟むことで画像サイズを調整できる */
+              child: jankenImage(),
+            ),
+            Padding(
+              /* これを挟むことで余白を挿入できる */
+              padding: EdgeInsets.all(20.0),
+              child: jankenText(),
+            ),
+            SizedBox(
+              width: double.infinity,
+              height: 100,
+              child: FlatButton(
+                onPressed: () {
+                  int newAnswerNumber = 0;
+                  print("タップされた");
+                  do {
+                    newAnswerNumber = Random().nextInt(3) + 1;
+                  } while (answerNumber == newAnswerNumber);
+                  setState(() {
+                    answerNumber = newAnswerNumber;
+                  });
+                },
+                color: Colors.pink,
+                child: Text(
+                  "じゃんけんをする！",
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
+  }
+
+/* answerNumberに応じた画像を返すメソッド */
+  Widget jankenImage() {
+    if (answerNumber == 0) {
+      return Container();
+    } else if (answerNumber == 1) {
+      return Image.asset("images/gu.png");
+    } else if (answerNumber == 2) {
+      return Image.asset("images/choki.png");
+    } else {
+      return Image.asset("images/pa.png");
+    }
+  }
+
+  /* answerNumberに応じたテキストを返すメソッド */
+  Widget jankenText() {
+    final fontSizeText = TextStyle(fontSize: 20);
+    if (answerNumber == 0) {
+      return Text(
+        "これからじゃんけんをします",
+        style: fontSizeText,
+      );
+    } else if (answerNumber == 1) {
+      return Text("グー", style: fontSizeText);
+    } else if (answerNumber == 2) {
+      return Text("チョキ", style: fontSizeText);
+    } else {
+      return Text("パー", style: fontSizeText);
+    }
   }
 }
