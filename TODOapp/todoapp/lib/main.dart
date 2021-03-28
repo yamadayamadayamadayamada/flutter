@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+//import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 void main() {
   // 最初に表示するWidget
@@ -19,10 +20,54 @@ class MyTodoApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       // リスト一覧画面を表示
-      home: TodoListPage(),
+      home: LoginPage(),
     );
   }
 }
+
+// ログイン画面用Widget
+class LoginPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              child: Text('ログイン'),
+              onPressed: () async {
+                // チャット画面に遷移＋ログイン画面を破棄
+                await Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) {
+                    return TodoListPage();
+                  }),
+                );
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Googleを使ってサインイン
+// Future<UserCredential> signInWithGoogle() async {
+//   // 認証フローのトリガー
+//   final googleUser = await GoogleSignIn(scopes: [
+//     'email',
+//   ]).signIn();
+//   // リクエストから、認証情報を取得
+//   final googleAuth = await googleUser.authentication;
+//   // クレデンシャルを新しく作成
+//   final credential = GoogleAuthProvider.credential(
+//     accessToken: googleAuth.accessToken,
+//     idToken: googleAuth.idToken,
+//   );
+//   // サインインしたら、UserCredentialを返す
+//   return FirebaseAuth.instance.signInWithCredential(credential);
+// }
 
 // リスト一覧画面用Widget
 class TodoListPage extends StatefulWidget {
